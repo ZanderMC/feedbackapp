@@ -2,10 +2,22 @@
 import express, { type Request, type Response } from 'express';
 import 'dotenv/config';
 import { feedbacks, type Feedback } from './data/feedback.js';
- const app = express();
+import cors from 'cors';
+
+const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+ 
+
+const corsOptions = {
+  origin: 'http://localhost:5173', // Reemplaza con el dominio permitido (o un array de dominios)
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos HTTP permitidos
+  credentials: false // Necesario si envías cookies o cabeceras de autorización
+};
+
+app.use(cors(corsOptions));
+
 
 app.get('/healt', (_, res: Response) => {
    res.json({
