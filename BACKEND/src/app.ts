@@ -10,7 +10,7 @@ const app = express();
 const PORT = Number(process.env.PORT || 4321);
 
 const corsOptions = {
-  origin: ['http://localhost:5173', 'https://feedbackapp-fawn.vercel.app/'],
+  origin: ['http://localhost:5173', 'https://feedbackapp-fawn.vercel.app'], 
   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   credentials: false
 };
