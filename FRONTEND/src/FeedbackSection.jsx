@@ -1,23 +1,38 @@
 import { useEffect , useState } from "react";
 import Feedback from "./Feedback";
-import Header from "./Header";
 import SearchBar from "./SearchBar";
+import { toast } from "sonner";
+import { apiRequest } from "./api";
 
 
 export default function FeedbackSection() {
  const [feedbacks, setFeedbacks] = useState([])
 
+const handleFeedbackCreated = (newFeedback) => {
+    setFeedbacks((currentFeedbacks) => [newFeedback, ...currentFeedbacks])
+}
+
 useEffect(()=>{
+    const controller = new AbortController();
 
     async function GetFeedback(){
-        const res  = await fetch('http://localhost:4321/feedback')
-
-        const data = await res.json()
-           console.log("data founded:", data);
- 
-        setFeedbacks(data)
+        try {
+            const data = await apiRequest('https://feedbackapp-production-671a1753.up.railway.app/feedback/', {
+                signal: controller.signal,
+            });
+            if (!Array.isArray(data)) {
+                throw new Error("El servidor devolvió una lista de feedbacks no válida.");
+            }
+            setFeedbacks(data);
+        } catch (error) {
+            if (error?.name !== "AbortError") {
+                toast.error(error instanceof Error ? error.message : "No se pudieron cargar los feedbacks.");
+            }
+        }
     }  
     GetFeedback()
+
+    return () => controller.abort();
 
 },[ ])
 
@@ -29,7 +44,7 @@ useEffect(()=>{
       </div>
         <section className="w-full h-full bg-red-400 p-[2rem] flex flex-col gap-10">
 
-            <SearchBar />
+            <SearchBar onFeedbackCreated={handleFeedbackCreated} />
             <section className="bg-green-300   flex flex-col gap-2 ">
                 <div className="bg-gray-500 w-full h-16">
 
@@ -37,9 +52,12 @@ useEffect(()=>{
 
                 <div className="bg-gray-500 w-full h-16 flex flex-col gap-6 h-auto">
                     
-                    {feedbacks.map((feedback)=>(
+                     {feedbacks.map((feedback)=>(
+                   
                     <Feedback key={feedback.id} title={feedback.title} description={feedback.description}  imageUrl={feedback.imageUrl} state={feedback.state} votes={feedback.votes} createdAt={feedback.createdAt} />
-                    ))}
+                    ))} 
+
+                    
                 </div>
             </section>
 
