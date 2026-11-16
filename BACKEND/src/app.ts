@@ -32,10 +32,18 @@ app.use(notFoundHandler);
 app.use(errorHandler);
 
 async function startServer() {
-  await dbClient.connectDB();
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server is running at http://localhost:${PORT}`);
-  });
+  try {
+    await dbClient.connectDB();
+    console.log('Connected to MongoDB successfully');
+
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
 }
 
 startServer().catch((error: unknown) => {
