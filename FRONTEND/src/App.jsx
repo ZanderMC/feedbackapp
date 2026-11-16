@@ -1,22 +1,18 @@
+import { Toaster } from 'sonner'
+import AsideSection from './AsideSection'
 import FeedbackSection from './FeedbackSection'
 import Header from './Header'
-import AsideSection from './AsideSection'
-import { Toaster } from 'sonner'
-
-
 
 export default function App() {
-
   return (
     <>
-      <Header />
-      <section className='flex flex-row gap-12 px-[30rem] py-[2rem]'>
-        <AsideSection/>
+      {/* <Header /> */}
+      <div className="app-shell">
+        <AsideSection />
         <FeedbackSection />
-      </section>
+      </div>
       <Toaster position="top-right" richColors />
     </>
-
   )
 }
 
