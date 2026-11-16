@@ -1,83 +1,49 @@
  
-import express, { type Request, type Response } from 'express';
+import express, { type Response } from 'express';
 import 'dotenv/config';
-import { feedbacks, type Feedback } from './data/feedback.js';
 import cors from 'cors';
-
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.use(express.json());
+import dbClient from './data/dbClient.js';
+import route from './routes/feedback.js';
+import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
  
+const app = express();
+const PORT = Number(process.env.PORT || 4321);
 
 const corsOptions = {
-  origin: 'http://localhost:5173', // Reemplaza con el dominio permitido (o un array de dominios)
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos HTTP permitidos
-  credentials: false // Necesario si envías cookies o cabeceras de autorización
+  origin: 'http://localhost:5173',
+  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+  credentials: false
 };
 
 app.use(cors(corsOptions));
+ 
+app.use(express.json());
+app.use("/feedback", route);
 
 
-app.get('/healt', (_, res: Response) => {
+app.get('/health', (_, res: Response) => {
    res.json({
     status: 'ok',
     message: 'API is running'
   });
 });
 
-//GET FEEDBACKS
-app.get('/feedback' ,(_, res: Response)=>{
-  res.status(200).json(feedbacks)
-})
+app.use(notFoundHandler);
+app.use(errorHandler);
 
-// ADD FEEDBACK
-app.post('/feedback',(_, res)=>{
+async function startServer() {
+  await dbClient.connectDB();
+  app.listen(PORT, () => {
+    console.log(`Server is running at http://localhost:${PORT}`);
+  });
+}
 
-  const body: Feedback= {
-     id: '0',
-    title: 'new fedback',
-    description: 'Lorem ipsum',
-    votes: 0,
-    createdAt: String( Date.now()),
-  }
-
-  //add feedback to the db
-  feedbacks.push(body)
-  res.status(201).json("feedback agregado: "+body)
-})
-
-//UPDATE FEEDBACK
-app.put('/feedback/:id',(req, res)=>{
-   const id = req.params.id
-   
-  const newTitle = "New Title"
-
-    feedbacks.map((feedback)=>{
-    if (feedback.id === id){
-      [feedback.title = newTitle,
-      ...feedbacks]
-    }
-  })
-
-  res.json("feedback updated! "  )
-})
-
-//DELETE FEEDBACK
-app.delete('/feedback/:id', (req,res)=>{
-
-   const id = req.params.id
-   
-   const index = feedbacks.findIndex(user => user.id === id);
-
-  if (index === -1) return null;
-
-   feedbacks.splice(index, 1);
-   
-
-  res.status(204).end(); 
-})
-
-app.listen(PORT, () => {
-  console.log(`Server is running at http://localhost:${PORT}`);
+startServer().catch((error: unknown) => {
+  console.error('Failed to connect to the database:', error);
+  process.exitCode = 1;
 });
+
+process.on('SIGINT',async()=>{
+  dbClient.closeConnection()
+  process.exit(0)
+})
