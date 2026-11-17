@@ -10,6 +10,10 @@ class feedbackModel {
     return feedback.find().sort({ createdAt: -1 });
   }
 
+  getById(id: string) {
+    return feedback.findById(id);
+  }
+
   create(input: CreateFeedbackInput) {
     const state: State = 'RECIBIDO';
     const newFeedback = {

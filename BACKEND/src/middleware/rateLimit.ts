@@ -25,3 +25,15 @@ export const feedbackUpdateLimiter = rateLimit({
     },
   },
 });
+
+export const feedbackVoteLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 60,
+  legacyHeaders: false,
+  message: {
+    error: {
+      code: "RATE_LIMIT_EXCEEDED",
+      message: "Demasiados cambios de voto. Intenta más tarde.",
+    },
+  },
+});

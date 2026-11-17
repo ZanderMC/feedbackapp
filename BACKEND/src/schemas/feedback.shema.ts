@@ -23,3 +23,9 @@ export const UpdateFeedbackSchema = CreateFeedbackSchema
     )
 
 export type UpdateFeedbackInput = z.infer<typeof UpdateFeedbackSchema>;
+
+export const VoteSchema = z.strictObject({
+    voterId: z.uuid(),
+});
+
+export const VoterIdSchema = z.uuid();
