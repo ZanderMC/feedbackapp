@@ -3,21 +3,64 @@ import Feedback from "./Feedback";
  import { toast } from "sonner";
 import { apiRequest } from "./api";
 import AddFeedbackForm from "./AddFeedbackForm";
+ import { getVoterId } from "./voterId";
+
+ const FEEDBACK_API_URL = "https://feedbackapp-production-671a1753.up.railway.app/feedback";
 
 export default function FeedbackSection() {
     const [feedbacks, setFeedbacks] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+     const [votingFeedbackIds, setVotingFeedbackIds] = useState(() => new Set());
 
     const handleFeedbackCreated = (newFeedback) => {
         setFeedbacks((currentFeedbacks) => [newFeedback, ...currentFeedbacks]);
     };
+
+    async function handleVoteToggle(feedback) {
+        setVotingFeedbackIds((currentIds) => new Set(currentIds).add(feedback.id));
+
+        try {
+            const voterId = getVoterId();
+            const result = await apiRequest(`${FEEDBACK_API_URL}/${encodeURIComponent(feedback.id)}/votes`, {
+                method: feedback.hasVoted ? "DELETE" : "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ voterId }),
+            });
+
+            setFeedbacks((currentFeedbacks) => currentFeedbacks.map((item) => (
+                item.id === feedback.id
+                    ? { ...item, votes: result.votes, hasVoted: result.hasVoted }
+                    : item
+            )));
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : "No se pudo actualizar tu voto.");
+        } finally {
+            setVotingFeedbackIds((currentIds) => {
+                const nextIds = new Set(currentIds);
+                nextIds.delete(feedback.id);
+                return nextIds;
+            });
+        }
+    }
 
     useEffect(() => {
         const controller = new AbortController();
 
         async function getFeedback() {
             try {
-                const data = await apiRequest('https://feedbackapp-production-671a1753.up.railway.app/feedback/', {
+                let voterId;
+                try {
+                    voterId = getVoterId();
+                } catch (error) {
+                    toast.error(error instanceof Error ? error.message : "No se pudo crear una identidad para votar.");
+                }
+
+                const url = voterId
+                    ? `${FEEDBACK_API_URL}/?voterId=${encodeURIComponent(voterId)}`
+                    : `${FEEDBACK_API_URL}/`;
+                const data = await apiRequest(url, {
                     signal: controller.signal,
                 });
                 if (!Array.isArray(data)) {
@@ -80,6 +123,9 @@ export default function FeedbackSection() {
                                 imageUrl={feedback.imageUrl}
                                 state={feedback.state}
                                 votes={feedback.votes}
+                                hasVoted={feedback.hasVoted}
+                                isVoting={votingFeedbackIds.has(feedback.id)}
+                                onVoteToggle={() => handleVoteToggle(feedback)}
                                 createdAt={feedback.createdAt}
                             />
                         ))

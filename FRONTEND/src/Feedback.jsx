@@ -1,4 +1,14 @@
-export default function Feedback({ title, description, imageUrl, state, votes, createdAt }) {
+export default function Feedback({
+  title,
+  description,
+  imageUrl,
+  state,
+  votes,
+  hasVoted,
+  isVoting,
+  onVoteToggle,
+  createdAt,
+}) {
   return (
     <article className="rounded-[10px] border border-[#eee5dc] bg-white p-5 shadow-[0_10px_30px_-28px_rgba(74,49,32,0.35)] transition hover:border-[#dfc9b8] hover:shadow-[0_16px_34px_-28px_rgba(74,49,32,0.4)] sm:p-6">
       <div className="flex items-start justify-between gap-4">
@@ -12,10 +22,21 @@ export default function Feedback({ title, description, imageUrl, state, votes, c
             {title}
           </h4>
         </div>
-        <div className=" cursor-pointer flex shrink-0 flex-col items-center rounded-xl border border-[#eee5dc] bg-[#fffdfa] px-3 py-2 text-[#a75c43]" aria-label={`${votes ?? 0} votos`}>
+        <button
+          type="button"
+          onClick={onVoteToggle}
+          disabled={isVoting}
+          aria-label={hasVoted ? `Quitar tu voto a ${title}` : `Votar por ${title}`}
+          aria-pressed={Boolean(hasVoted)}
+          className={`flex shrink-0 flex-col items-center rounded-xl border px-3 py-2 transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#bd674b] disabled:cursor-wait disabled:opacity-60 ${
+            hasVoted
+              ? "border-[#bd674b] bg-[#f8eee7] text-[#a75c43]"
+              : "border-[#eee5dc] bg-[#fffdfa] text-[#a75c43] hover:border-[#dfc9b8] hover:bg-[#fcf7f2]"
+          }`}
+        >
           <span className="text-[11px] leading-none" aria-hidden="true">▲</span>
-          <span className="mt-1 text-sm font-semibold leading-none ">{votes ?? 0}</span>
-        </div>
+          <span className="mt-1 text-sm font-semibold leading-none">{votes ?? 0}</span>
+        </button>
       </div>
       {description && (
         <p className="mt-3 whitespace-pre-line wrap-break-word text-sm leading-6 text-[#817265]">
