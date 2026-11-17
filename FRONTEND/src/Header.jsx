@@ -2,7 +2,7 @@
 export default function Header() {
   return (
     <header className="border-b border-[#eee5dc] bg-white">
-      <div className="mx-auto flex h-[76px] w-[min(1180px,calc(100%-48px))] items-center justify-between max-[760px]:w-[calc(100%-32px)]">
+      <div className="mx-auto flex h-19 w-[min(1180px,calc(100%-48px))] items-center justify-between max-[760px]:w-[calc(100%-32px)]">
         <a href="/" className="flex items-center gap-3 no-underline" aria-label="Zandev's Corp, inicio">
           <span className="flex size-10 items-center justify-center rounded-[14px] bg-[#bd674b] text-lg font-bold text-white shadow-sm shadow-[#bd674b]/20">
             z

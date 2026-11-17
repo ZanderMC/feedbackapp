@@ -8,7 +8,7 @@ export default function Feedback({ title, description, imageUrl, state, votes, c
               {state}
             </span>
           )}
-          <h4 className="break-words text-[17px] font-semibold leading-6 tracking-[-0.02em] text-[#3d3027]">
+          <h4 className="wrap-break-word text-[17px] font-semibold leading-6 tracking-[-0.02em] text-[#3d3027]">
             {title}
           </h4>
         </div>
@@ -18,7 +18,7 @@ export default function Feedback({ title, description, imageUrl, state, votes, c
         </div>
       </div>
       {description && (
-        <p className="mt-3 whitespace-pre-line break-words text-sm leading-6 text-[#817265]">
+        <p className="mt-3 whitespace-pre-line wrap-break-word text-sm leading-6 text-[#817265]">
           {description}
         </p>
       )}
