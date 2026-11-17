@@ -1,16 +1,51 @@
-# React + Vite
+# FeedbackApp (Frontend)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Live Demo:** [feedbackapp-fawn.vercel.app](https://feedbackapp-fawn.vercel.app/)
 
-Currently, two official plugins are available:
+## English
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+The FeedbackApp frontend is a responsive React application for browsing feature requests and sharing new ideas. Visitors can vote for a suggestion or remove their vote without creating an account. Their anonymous voter ID is stored in the browser's `localStorage`.
 
-## React Compiler
+### Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Browse feedback suggestions, descriptions, statuses, and vote totals.
+- Submit a feature request using the collapsible feedback form.
+- Vote for a suggestion or remove your vote.
+- Keep an anonymous voter ID in `localStorage` so each browser can vote once per suggestion.
+- Show loading, empty, success, and error states.
+- Responsive layout for desktop and mobile screens.
 
-## Expanding the ESLint configuration
+### Tech stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- React 19.
+- Vite 8.
+- Tailwind CSS 4.
+- Sonner for toast notifications.
+
+### API
+
+The frontend currently sends feedback and voting requests directly to the production API hosted on Railway. Running the frontend locally will also use that API unless its URL is changed in the source.
+
+## Español
+
+El frontend de FeedbackApp es una aplicación adaptable hecha con React para explorar solicitudes de funciones y compartir nuevas ideas. Los visitantes pueden votar por una sugerencia o retirar su voto sin crear una cuenta. El identificador anónimo del votante se guarda en el `localStorage` del navegador.
+
+### Funciones
+
+- Explorar sugerencias, descripciones, estados y totales de votos.
+- Enviar solicitudes de funciones mediante un formulario plegable.
+- Votar por una sugerencia o retirar el voto.
+- Guardar un identificador anónimo en `localStorage` para limitar a un voto por sugerencia en cada navegador.
+- Mostrar estados de carga, lista vacía, éxito y error.
+- Diseño adaptable a computadoras y dispositivos móviles.
+
+### Tecnologías
+
+- React 19.
+- Vite 8.
+- Tailwind CSS 4.
+- Sonner para las notificaciones.
+
+### API
+
+Actualmente, el frontend envía las solicitudes de feedback y votos directamente a la API de producción alojada en Railway.
